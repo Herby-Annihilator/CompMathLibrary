@@ -7,7 +7,7 @@ namespace CompMathLibrary
 {
 	public class MethodsFactory
 	{
-		public GaussMethod CreateGaussMethod()
+		public GaussMethod CreateGaussMethod(double[][] matrixA, double[] vectorB)
 		{
 
 		}

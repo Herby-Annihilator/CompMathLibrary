@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CompMathLibrary.Methods.Base;
+using CompMathLibrary.Methods;
 
 namespace CompMathLibrary
 {
@@ -10,7 +11,7 @@ namespace CompMathLibrary
 		public MethodsFactory Factory { get; private set; }
 		public void SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, Method method)
 		{
-			method.Solve(matrixA, vectorB);
+			Answer answer = method.Solve();
 		}
 	}
 }

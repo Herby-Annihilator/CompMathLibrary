@@ -7,6 +7,6 @@ namespace CompMathLibrary.Methods.Base
 {
 	public abstract class Method
 	{
-		public abstract double[] Solve(double[][] matrixA, double[] vectorB);
+		public abstract Answer Solve();
 	}
 }
