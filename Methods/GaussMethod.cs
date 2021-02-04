@@ -5,7 +5,7 @@ using CompMathLibrary.Methods.Base;
 
 namespace CompMathLibrary.Methods
 {
-	internal class GaussMethod : Method
+	public class GaussMethod : Method
 	{
 		private double[][] workingMatrix;
 		private double[] workingVector;

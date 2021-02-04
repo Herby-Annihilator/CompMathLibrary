@@ -8,10 +8,14 @@ namespace CompMathLibrary
 {
 	public class CMReshala
 	{
-		public MethodsFactory Factory { get; private set; }
-		public void SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, Method method)
+		private MethodsFactory Factory { get; set; }
+		public Answer SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, MethodType method)
 		{
-			Answer answer = method.Solve();
+			return Factory.Build(matrixA, vectorB, method).Solve();
+		}
+		public CMReshala()
+		{
+			Factory = new MethodsFactory();
 		}
 	}
 }
