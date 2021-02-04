@@ -8,6 +8,11 @@ namespace CompMathLibrary.Methods
 	{
 		public List<double[]> Solution { get; internal set; }
 		public AnswerStatus AnswerStatus { get; internal set; }
+		public Answer()
+		{
+			Solution = null;
+			AnswerStatus = AnswerStatus.NoSolutions;
+		}
 	}
 
 	public enum AnswerStatus

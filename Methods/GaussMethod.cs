@@ -11,7 +11,12 @@ namespace CompMathLibrary.Methods
 		private double[] workingVector;
 		public override Answer Solve()
 		{
-			throw new NotImplementedException();
+			Direct();
+			Answer answer = new Answer();
+			answer.Solution = null;
+			answer.AnswerStatus = AnswerStatus.NoSolutions;
+			Back(answer);
+			return answer;
 		}
 		internal GaussMethod(double[][] matrixA, double[] vectorB)
 		{
@@ -23,14 +28,14 @@ namespace CompMathLibrary.Methods
 			workingVector = null;
 			workingMatrix = null;
 		}
-		private void Direct()
+		private void Direct()   // приводит матрицу к трапецевидному виду
 		{
 			int currentRow = 0;
-			int currentCol = 0;
-			
-			for (; currentRow < workingMatrix.GetLength(0); currentRow++)
+			int currentCol = 0;			
+			for (; currentCol < workingMatrix[0].Length; currentRow++, currentCol++)
 			{
 				ApplyPartialPivot(currentRow, currentCol);
+				AddSpecifiedRowToOthers(currentRow, currentCol);
 			}
 		}
 		private void ApplyPartialPivot(int currentRow, int currentCol)
@@ -53,7 +58,6 @@ namespace CompMathLibrary.Methods
 			}
 			return maxElemIndex;
 		}
-
 		private void SwapRows(int firstRowIndex, int secondRowIndex)
 		{
 			double[] matrixBuffer = new double[workingMatrix.GetLength(0)];
@@ -65,9 +69,85 @@ namespace CompMathLibrary.Methods
 			workingVector[firstRowIndex] = workingVector[secondRowIndex];
 			workingVector[secondRowIndex] = buffer;
 		}
-		private void Back()
-		{
 
+		private void AddSpecifiedRowToOthers(int rowIndex, int colIndex)
+		{
+			double coefficient = 0;
+			for (int i = rowIndex; i < workingMatrix.GetLength(0) - 1; i++)
+			{
+				coefficient = workingMatrix[i + 1][colIndex] / workingMatrix[i][colIndex];  // a21/a11; a31/a11; etc.
+				for (int j = colIndex; j < workingMatrix[i].Length; j++)
+				{
+					workingMatrix[i + 1][j] -= workingMatrix[i][j] * coefficient;// a21 - a11*(a21/a11); a22 - a11*(a21/a11)
+				}
+				workingVector[i + 1] -= workingVector[i] * coefficient;  // b2 - b1*(a21/a11); b3 - b1*(a21/a11)
+			}
+		}
+		
+
+
+		private void Back(Answer answer)
+		{
+			switch(answer.AnswerStatus)
+			{
+				case AnswerStatus.OneSolution:
+					{
+						answer.Solution = new List<double[]>();
+						answer.Solution.Add(new double[workingMatrix[0].Length]);
+						for (int currentRow = workingMatrix.GetLength(0); currentRow >=0; currentRow--)
+						{
+							answer.Solution[0][currentRow] = workingVector[currentRow];
+							for (int i = 0; i < currentRow; i++)
+							{
+								workingVector[i] = workingVector[i] - 
+									workingMatrix[i][currentRow] * answer.Solution[0][currentRow];
+							}
+						}
+						break;
+					}
+				default:
+					{
+						answer.Solution = null;
+						break;
+					}
+			}
+		}
+		private AnswerStatus CheckAnswer()
+		{
+			int freeVars = 0;
+			for (int row = workingMatrix.GetLength(0) - 1; row >= 0; row--)
+			{
+				if (IsThisRowZero(row))
+				{
+					if (workingVector[row] != 0)
+					{
+						return AnswerStatus.NoSolutions;
+					}
+					continue;
+				}
+				else
+				{
+					for (int col = row; col < workingMatrix[row].Length; col++)
+					{
+						if (workingMatrix[row][col] != 0)
+						{
+							freeVars++;
+						}
+					}
+					break;
+				}
+			}
+			if (freeVars == 1) return AnswerStatus.OneSolution;
+			return AnswerStatus.SeveralSolutions;
+		}
+		private bool IsThisRowZero(int index)
+		{
+			for (int i = 0; i < workingMatrix[index].Length; i++)
+			{
+				if (workingMatrix[index][i] != 0)
+					return false;
+			}
+			return true;
 		}
 	}
 }
