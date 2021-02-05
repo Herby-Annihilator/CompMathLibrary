@@ -33,9 +33,9 @@ namespace CompMathLibrary
 					matrixAWritten = true;
 					continue;
 				}
-				else if (!vectorBWritten)
+				if (!vectorBWritten)
 				{
-					while (buffer != null && string.IsNullOrWhiteSpace(buffer))
+					while (buffer != null && !string.IsNullOrWhiteSpace(buffer))
 					{
 						vector.Add(Convert.ToDouble(buffer));
 						buffer = reader.ReadLine();

@@ -98,7 +98,7 @@ namespace CompMathLibrary.Methods
 			double coefficient = 0;
 			for (int i = rowIndex; i < workingMatrix.GetLength(0) - 1; i++)
 			{
-				coefficient = workingMatrix[i + 1][colIndex] / workingMatrix[i][colIndex];  // a21/a11; a31/a11; etc.
+				coefficient = workingMatrix[i + 1][colIndex] / workingMatrix[rowIndex][colIndex];  // a21/a11; a31/a11; etc.
 				for (int j = colIndex; j < workingMatrix[i].Length; j++)
 				{
 					workingMatrix[i + 1][j] -= workingMatrix[i][j] * coefficient;// a21 - a11*(a21/a11); a22 - a11*(a21/a11)
@@ -117,7 +117,7 @@ namespace CompMathLibrary.Methods
 					{
 						answer.Solution = new List<double[]>();
 						answer.Solution.Add(new double[workingMatrix[0].Length]);
-						for (int currentRow = workingMatrix.GetLength(0); currentRow >=0; currentRow--)
+						for (int currentRow = workingMatrix.GetLength(0) - 1; currentRow >=0; currentRow--)
 						{
 							answer.Solution[0][currentRow] = workingVector[currentRow];
 							for (int i = 0; i < currentRow; i++)
