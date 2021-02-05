@@ -9,22 +9,44 @@ namespace CompMathLibrary.Methods
 	{
 		private double[][] workingMatrix;
 		private double[] workingVector;
+		private int numberOfPermutations;
 		public override Answer Solve()
 		{
 			Direct();
 			Answer answer = new Answer();
 			answer.Solution = null;
-			answer.AnswerStatus = AnswerStatus.NoSolutions;
+			answer.AnswerStatus = CheckAnswer();
 			Back(answer);
+			if (answer.Solution?.Count > 0)
+			{
+				answer.Determinant = GetDeterminant();
+			}		
 			return answer;
 		}
-		internal GaussMethod(double[][] matrixA, double[] vectorB)
+		private double GetDeterminant()
+		{
+			double det = Math.Abs(workingMatrix[0][0]);
+			for (int i = 1; i < workingMatrix.Length; i++)
+			{
+				det *= Math.Abs(workingMatrix[i][i]);
+			}
+			if (numberOfPermutations % 2 == 0)
+			{
+				return det;
+			}
+			else
+			{
+				return det * (-1);
+			}
+		}
+		internal GaussMethod(double[][] matrixA, double[] vectorB) : this()
 		{
 			workingMatrix = matrixA;
 			workingVector = vectorB;
 		}
 		internal GaussMethod()
 		{
+			numberOfPermutations = 0;
 			workingVector = null;
 			workingMatrix = null;
 		}
@@ -44,6 +66,7 @@ namespace CompMathLibrary.Methods
 			if (rowIndexOfMaxAbsInCol != currentRow)
 			{
 				SwapRows(rowIndexOfMaxAbsInCol, currentRow);
+				numberOfPermutations++;
 			}
 		}
 		private int GetRowIndexOfMaxABSofElementInColumn(int startRow, int columnIndex)
@@ -129,7 +152,7 @@ namespace CompMathLibrary.Methods
 				{
 					for (int col = row; col < workingMatrix[row].Length; col++)
 					{
-						if (workingMatrix[row][col] != 0)
+						if (Math.Abs(workingMatrix[row][col]) > double.Epsilon)
 						{
 							freeVars++;
 						}
@@ -144,7 +167,7 @@ namespace CompMathLibrary.Methods
 		{
 			for (int i = 0; i < workingMatrix[index].Length; i++)
 			{
-				if (workingMatrix[index][i] != 0)
+				if (Math.Abs(workingMatrix[index][i]) > double.Epsilon)
 					return false;
 			}
 			return true;

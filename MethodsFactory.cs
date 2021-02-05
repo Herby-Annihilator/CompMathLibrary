@@ -27,6 +27,10 @@ namespace CompMathLibrary
 		{
 			switch (type)
 			{
+				case MethodType.Gauss:
+					{
+						return CreateGaussMethod(matrixA, vectorB);
+					}
 				default:
 					{
 						return CreateGaussMethod(matrixA, vectorB);

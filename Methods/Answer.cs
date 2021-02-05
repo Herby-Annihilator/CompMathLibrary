@@ -8,8 +8,10 @@ namespace CompMathLibrary.Methods
 	{
 		public List<double[]> Solution { get; internal set; }
 		public AnswerStatus AnswerStatus { get; internal set; }
+		public double Determinant { get; internal set; }
 		public Answer()
 		{
+			Determinant = 0;
 			Solution = null;
 			AnswerStatus = AnswerStatus.NoSolutions;
 		}
