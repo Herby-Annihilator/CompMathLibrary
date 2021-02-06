@@ -96,14 +96,14 @@ namespace CompMathLibrary.Methods
 		private void AddSpecifiedRowToOthers(int rowIndex, int colIndex)
 		{
 			double coefficient = 0;
-			for (int i = rowIndex; i < workingMatrix.GetLength(0) - 1; i++)
+			for (int i = 1; i < workingMatrix.GetLength(0) - rowIndex; i++)
 			{
-				coefficient = workingMatrix[i + 1][colIndex] / workingMatrix[rowIndex][colIndex];  // a21/a11; a31/a11; etc.
+				coefficient = workingMatrix[rowIndex + i][colIndex] / workingMatrix[rowIndex][colIndex];  // a21/a11; a31/a11; etc.
 				for (int j = colIndex; j < workingMatrix[i].Length; j++)
 				{
-					workingMatrix[i + 1][j] -= workingMatrix[i][j] * coefficient;// a21 - a11*(a21/a11); a22 - a11*(a21/a11)
+					workingMatrix[rowIndex + i][j] -= workingMatrix[rowIndex][j] * coefficient;// a21 - a11*(a21/a11); a22 - a11*(a21/a11)
 				}
-				workingVector[i + 1] -= workingVector[i] * coefficient;  // b2 - b1*(a21/a11); b3 - b1*(a21/a11)
+				workingVector[rowIndex + i] -= workingVector[rowIndex] * coefficient;  // b2 - b1*(a21/a11); b3 - b1*(a21/a11)
 			}
 		}
 		
@@ -119,7 +119,7 @@ namespace CompMathLibrary.Methods
 						answer.Solution.Add(new double[workingMatrix[0].Length]);
 						for (int currentRow = workingMatrix.GetLength(0) - 1; currentRow >=0; currentRow--)
 						{
-							answer.Solution[0][currentRow] = workingVector[currentRow];
+							answer.Solution[0][currentRow] = workingVector[currentRow] / workingMatrix[currentRow][currentRow];
 							for (int i = 0; i < currentRow; i++)
 							{
 								workingVector[i] = workingVector[i] - 
