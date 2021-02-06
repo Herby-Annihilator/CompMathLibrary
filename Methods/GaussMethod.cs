@@ -25,10 +25,10 @@ namespace CompMathLibrary.Methods
 		}
 		private double GetDeterminant()
 		{
-			double det = Math.Abs(workingMatrix[0][0]);
+			double det = workingMatrix[0][0];
 			for (int i = 1; i < workingMatrix.Length; i++)
 			{
-				det *= Math.Abs(workingMatrix[i][i]);
+				det *= workingMatrix[i][i];
 			}
 			if (numberOfPermutations % 2 == 0)
 			{
