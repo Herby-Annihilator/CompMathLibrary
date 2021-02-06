@@ -41,8 +41,21 @@ namespace CompMathLibrary.Methods
 		}
 		internal GaussMethod(double[][] matrixA, double[] vectorB) : this()
 		{
-			workingMatrix = matrixA;
-			workingVector = vectorB;
+			workingMatrix = CloneMatrix(matrixA);
+			workingVector = (double[])vectorB.Clone();
+		}
+		private double[][] CloneMatrix(double[][] matr)
+		{
+			double[][] clone = new double[matr.GetLength(0)][];
+			for (int i = 0; i < clone.GetLength(0); i++)
+			{
+				clone[i] = new double[matr[i].Length];
+				for (int j = 0; j < clone[i].Length; j++)
+				{
+					clone[i][j] = matr[i][j];
+				}
+			}
+			return clone;
 		}
 		internal GaussMethod()
 		{
