@@ -85,23 +85,29 @@ namespace CompMathLibrary
 			if (File.Exists("matrixA.txt"))
 			{
 				CopyFirstFileToSecondFile("matrixA.txt", fileName);
+				File.SetAttributes(fileName, RemoveAttribute(File.GetAttributes(fileName),
+					FileAttributes.Hidden));
 			}
 			SaveVectorToHiddenFile("vectorB.txt", vector);
 			AppendFirstFileToSecondFile("vectorB.txt", fileName, "\r\n");
+		}
+		private static FileAttributes RemoveAttribute(FileAttributes attributes, FileAttributes attributesToRemove)
+		{
+			return attributes & ~attributesToRemove;
 		}
 		private static void SaveVectorToHiddenFile(string fileName, double[] vector)
 		{
 			if (File.Exists(fileName))
 				File.Delete(fileName);
 			SaveVectorToFile(fileName, vector);
-			File.SetAttributes(fileName, FileAttributes.Hidden);
+			File.SetAttributes(fileName, File.GetAttributes(fileName) | FileAttributes.Hidden);
 		}
 		private static void SaveMatrixToHiddenFile(string fileName, double[][] matrix)
 		{
 			if (File.Exists(fileName))
 				File.Delete(fileName);
 			SaveMatrixToFile(fileName, matrix);
-			File.SetAttributes(fileName, FileAttributes.Hidden);
+			File.SetAttributes(fileName, File.GetAttributes(fileName) | FileAttributes.Hidden);
 		}
 		
 		private static void SaveVectorToFile(string fileName, double[] vector)
