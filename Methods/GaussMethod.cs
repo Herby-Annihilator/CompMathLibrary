@@ -44,19 +44,7 @@ namespace CompMathLibrary.Methods
 			workingMatrix = CloneMatrix(matrixA);
 			workingVector = (double[])vectorB.Clone();
 		}
-		private double[][] CloneMatrix(double[][] matr)
-		{
-			double[][] clone = new double[matr.GetLength(0)][];
-			for (int i = 0; i < clone.GetLength(0); i++)
-			{
-				clone[i] = new double[matr[i].Length];
-				for (int j = 0; j < clone[i].Length; j++)
-				{
-					clone[i][j] = matr[i][j];
-				}
-			}
-			return clone;
-		}
+		
 		internal GaussMethod()
 		{
 			numberOfPermutations = 0;
@@ -108,15 +96,26 @@ namespace CompMathLibrary.Methods
 
 		private void AddSpecifiedRowToOthers(int rowIndex, int colIndex)
 		{
-			double coefficient = 0;
-			for (int i = 1; i < workingMatrix.GetLength(0) - rowIndex; i++)
+			try
 			{
-				coefficient = workingMatrix[rowIndex + i][colIndex] / workingMatrix[rowIndex][colIndex];  // a21/a11; a31/a11; etc.
-				for (int j = colIndex; j < workingMatrix[i].Length; j++)
+				double coefficient = 0;
+				for (int i = 1; i < workingMatrix.GetLength(0) - rowIndex; i++)
 				{
-					workingMatrix[rowIndex + i][j] -= workingMatrix[rowIndex][j] * coefficient;// a21 - a11*(a21/a11); a22 - a11*(a21/a11)
+					coefficient = workingMatrix[rowIndex + i][colIndex] / workingMatrix[rowIndex][colIndex];  // a21/a11; a31/a11; etc.
+					if (double.IsNaN(coefficient) || double.IsInfinity(coefficient))
+					{
+						throw new Exception("Division by zero. The matrix is degenerate.");
+					}
+					for (int j = colIndex; j < workingMatrix[i].Length; j++)
+					{
+						workingMatrix[rowIndex + i][j] -= workingMatrix[rowIndex][j] * coefficient;// a21 - a11*(a21/a11); a22 - a11*(a21/a11)
+					}
+					workingVector[rowIndex + i] -= workingVector[rowIndex] * coefficient;  // b2 - b1*(a21/a11); b3 - b1*(a21/a11)
 				}
-				workingVector[rowIndex + i] -= workingVector[rowIndex] * coefficient;  // b2 - b1*(a21/a11); b3 - b1*(a21/a11)
+			}			
+			catch (Exception e)
+			{
+				throw new Exception("Division by zero. The matrix is degenerate.");
 			}
 		}
 		

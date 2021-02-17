@@ -57,5 +57,9 @@ namespace CompMathLibrary
 			}
 			return matr;
 		}
+		public double[][] GetReversedMatrix(double[][] sourceMatrix, MethodType methodType = MethodType.Gauss)
+		{
+
+		}
 	}
 }

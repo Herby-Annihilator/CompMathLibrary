@@ -22,6 +22,10 @@ namespace CompMathLibrary
 			GaussMethod gaussMethod = new GaussMethod(matrixA, vectorB);
 			return gaussMethod;
 		}
+		private SquareRootMethod CreateSquareRootMethod(double[][] matrixA, double[] vectorB)
+		{
+
+		}
 
 		public Method Build(double[][] matrixA, double[] vectorB, MethodType type)
 		{
@@ -30,6 +34,10 @@ namespace CompMathLibrary
 				case MethodType.Gauss:
 					{
 						return CreateGaussMethod(matrixA, vectorB);
+					}
+				case MethodType.SquareRoot:
+					{
+						return CreateSquareRootMethod(matrixA, vectorB);
 					}
 				default:
 					{
@@ -40,6 +48,7 @@ namespace CompMathLibrary
 	}
 	public enum MethodType
 	{
-		Gauss
+		Gauss,
+		SquareRoot
 	}
 }
