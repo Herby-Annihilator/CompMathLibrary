@@ -59,7 +59,28 @@ namespace CompMathLibrary
 		}
 		public double[][] GetReversedMatrix(double[][] sourceMatrix, MethodType methodType = MethodType.Gauss)
 		{
-
+			double[][] reversedMatrix = new double[sourceMatrix.GetLength(0)][];
+			for (int i = 0; i < reversedMatrix.Length; i++)
+			{
+				reversedMatrix[i] = new double[sourceMatrix[i].Length];
+			}
+			int colsCount = reversedMatrix[0].Length;
+			double[] tmpVector = new double[sourceMatrix.GetLength(0)];
+			List<double[]> currentSolution;
+			int nextIndex = 0;
+			for (int i = 0; i < colsCount; i++)
+			{
+				tmpVector[nextIndex] = 1;
+				currentSolution = SolveSystemOfLinearAlgebraicEquations(sourceMatrix, tmpVector,
+					methodType).Solution;
+				for (int j = 0; j < reversedMatrix.GetLength(0); j++)
+				{
+					reversedMatrix[j][i] = currentSolution[0][j];
+				}
+				tmpVector[nextIndex] = 0;
+				nextIndex++;
+			}
+			return reversedMatrix;
 		}
 	}
 }

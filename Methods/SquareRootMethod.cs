@@ -45,7 +45,7 @@ namespace CompMathLibrary.Methods
 						continue;
 					}				
 				}
-				for (int j = 0; j < matrixA.GetLength(0); j++)
+				for (int j = i + 1; j < matrixA.GetLength(0); j++)
 				{
 					totalSum = 0;
 					for (int k = 0; k < i; k++)
@@ -80,13 +80,14 @@ namespace CompMathLibrary.Methods
 			determinant *= determinant;
 			answer.AnswerStatus = AnswerStatus.OneSolution;
 			answer.Determinant = determinant;
+			answer.Solution = new List<double[]>();
 			double[] x = new double[vectorB.Length];
 			int currentVariable;
 			for (int i = vectorB.Length - 1; i >= 0; i--)
 			{
 				totalSum = 0;
 				currentVariable = orderOfUnknownsVariables[i];
-				for (int k = i; k >= 0; k--)
+				for (int k = i + 1; k < matrixA.GetLength(0); k++)
 				{
 					totalSum += upperTriangularMatrix[i][k] * x[orderOfUnknownsVariables[k]];
 				}
