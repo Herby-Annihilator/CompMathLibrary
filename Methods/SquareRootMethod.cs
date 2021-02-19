@@ -79,7 +79,7 @@ namespace CompMathLibrary.Methods
 			}
 			determinant *= determinant;
 			answer.AnswerStatus = AnswerStatus.OneSolution;
-			answer.Determinant = determinant;
+			answer.Determinant = determinant * DeterminantSign(diagonal);
 			answer.Solution = new List<double[]>();
 			double[] x = new double[vectorB.Length];
 			int currentVariable;
@@ -95,6 +95,15 @@ namespace CompMathLibrary.Methods
 			}
 			answer.Solution.Add(x);
 			return answer;
+		}
+		private int DeterminantSign(int[] diagonal)
+		{
+			int sign = 1;
+			for (int i = 0; i < diagonal.Length; i++)
+			{
+				sign *= diagonal[i];
+			}
+			return sign;
 		}
 		private bool ReplaceDiagonalElement(int elementIndex)
 		{
