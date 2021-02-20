@@ -82,5 +82,22 @@ namespace CompMathLibrary
 			}
 			return reversedMatrix;
 		}
+		public double[][] CreateGilbertMatrix(int matrixSize)
+		{
+			double[][] gilbertMatrix = new double[matrixSize][];
+			for (int i = 0; i < matrixSize; i++)
+			{
+				gilbertMatrix[i] = new double[matrixSize];
+			}
+			for (int i = 0; i < matrixSize; i++)
+			{				
+				for (int j = i; j < matrixSize; j++)
+				{
+					gilbertMatrix[i][j] = (double)1 / ((double)i + 1 + (double)j + 1 - 1);
+					gilbertMatrix[j][i] = gilbertMatrix[i][j];
+				}
+			}
+			return gilbertMatrix;
+		}
 	}
 }
