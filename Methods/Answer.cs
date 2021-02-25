@@ -12,7 +12,7 @@ namespace CompMathLibrary.Methods
 		public Answer()
 		{
 			Determinant = 0;
-			Solution = null;
+			Solution = new List<double[]>();
 			AnswerStatus = AnswerStatus.NoSolutions;
 		}
 	}
