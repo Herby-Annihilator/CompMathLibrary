@@ -40,28 +40,58 @@ namespace CompMathLibrary
 				throw new ArgumentException("Count of rows in matrix A != count of numbers in vector B");
 		}
 
-		public Method Build(double[][] matrixA, double[] vectorB, MethodType type)
+		public Method Build(double[][] matrixA, double[] vectorB, DirectMethodType type = DirectMethodType.Gauss)
 		{
-			switch (type)
+			return type switch
 			{
-				case MethodType.Gauss:
-					{
-						return CreateGaussMethod(matrixA, vectorB);
-					}
-				case MethodType.SquareRoot:
-					{
-						return CreateSquareRootMethod(matrixA, vectorB);
-					}
-				default:
-					{
-						return CreateGaussMethod(matrixA, vectorB);
-					}
-			}
+				DirectMethodType.Gauss => CreateGaussMethod(matrixA, vectorB),
+				DirectMethodType.SquareRoot => CreateSquareRootMethod(matrixA, vectorB),
+				_ => CreateGaussMethod(matrixA, vectorB),
+			};
+		}
+		public Method Build(double[][] matrixA, double[] vectorB, double[] approximation,
+			double precision, IterativeMethodType type = IterativeMethodType.Jacobi)
+		{
+			return type switch
+			{
+				IterativeMethodType.Jacobi => CreateJacobiMethod(matrixA, vectorB, approximation, precision),
+				IterativeMethodType.Seidel => CreateSeidelMethod(matrixA, vectorB, approximation, precision),
+				_ => CreateJacobiMethod(matrixA, vectorB, approximation, precision),
+			};
+		}
+
+		private JacobiMethod CreateJacobiMethod(double[][] matrix, double[] vector, double[] approx,
+			double precision)
+		{
+			DefaultCheck(matrix, vector);
+			CheckIterativeConditions(vector, approx, precision);
+			return new JacobiMethod(matrix, vector, approx, precision);
+		}
+		private JacobiMethod CreateSeidelMethod(double[][] matrix, double[] vector, double[] approx,
+			double precision)
+		{
+			DefaultCheck(matrix, vector);
+			CheckIterativeConditions(vector, approx, precision);
+			return new SeidelMethod(matrix, vector, approx, precision);
+		}
+		private void CheckIterativeConditions(double[] vector, double[] approx, double precision)
+		{
+			if (approx == null)
+				throw new ArgumentNullException("Approximation was null");
+			if (approx.Length != vector.Length)
+				throw new ArgumentException("Invalid size of approximation vector");
+			if (precision < double.Epsilon)
+				throw new ArgumentException("Precision is VERY small");
 		}
 	}
-	public enum MethodType
+	public enum DirectMethodType
 	{
 		Gauss,
 		SquareRoot
+	}
+	public enum IterativeMethodType
+	{
+		Jacobi,
+		Seidel
 	}
 }

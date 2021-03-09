@@ -7,11 +7,11 @@ namespace CompMathLibrary.Methods
 {
 	public class JacobiMethod : Method
 	{
-		private double[][] matrixA;
-		private double[] vectorB;
-		private double[] startApproximation;
-		double precision;
-		private int numberOfIterations;
+		protected double[][] matrixA;
+		protected double[] vectorB;
+		protected double[] startApproximation;
+		protected double precision;
+		protected int numberOfIterations;
 		internal JacobiMethod(double[][] matrix, double[] vector, double[] startApproximation, double precision)
 		{
 			matrixA = CloneMatrix(matrix);
@@ -47,7 +47,7 @@ namespace CompMathLibrary.Methods
 			answer.NumberOfIterations = numberOfIterations;
 			return answer;
 		}
-		private bool IsPrecisionAchieved(double[] previousApproximation, double[] currentApproximation)
+		protected bool IsPrecisionAchieved(double[] previousApproximation, double[] currentApproximation)
 		{
 			for (int i = 0; i < previousApproximation.Length; i++)
 			{

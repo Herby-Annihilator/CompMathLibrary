@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CompMathLibrary.Methods
 {
-	class IterativeAnswer : Answer
+	public class IterativeAnswer : Answer
 	{
 		public int NumberOfIterations { get; set; }
 	}

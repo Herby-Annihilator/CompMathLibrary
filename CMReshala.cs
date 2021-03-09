@@ -8,11 +8,16 @@ namespace CompMathLibrary
 {
 	public class CMReshala
 	{
+		private const double DEFAULT_PRECISION = 0.000001;
 		private MethodsFactory Factory { get; set; }
-		public Answer SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, MethodType method)
+		public Answer SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, DirectMethodType method)
 		{
 			return Factory.Build(matrixA, vectorB, method).Solve();
 		}
+		public IterativeAnswer SolveSystemOfLinearAlgebraicEquationsIteratively(double[][] matrixA,
+			double[] vectorB, double[] approximation, double precision = DEFAULT_PRECISION,
+			IterativeMethodType type = IterativeMethodType.Jacobi) =>
+			(IterativeAnswer)Factory.Build(matrixA, vectorB, approximation, precision, type).Solve();
 		public CMReshala()
 		{
 			Factory = new MethodsFactory();
@@ -52,12 +57,12 @@ namespace CompMathLibrary
 				matr[i] = new double[colsCount];
 				for (int j = 0; j < colsCount; j++)
 				{
-					matr[i][j] = random.NextDouble();
+					matr[i][j] = random.Next();
 				}
 			}
 			return matr;
 		}
-		public double[][] GetReversedMatrix(double[][] sourceMatrix, MethodType methodType = MethodType.Gauss)
+		public double[][] GetReversedMatrix(double[][] sourceMatrix, DirectMethodType methodType = DirectMethodType.Gauss)
 		{
 			double[][] reversedMatrix = new double[sourceMatrix.GetLength(0)][];
 			for (int i = 0; i < reversedMatrix.Length; i++)
