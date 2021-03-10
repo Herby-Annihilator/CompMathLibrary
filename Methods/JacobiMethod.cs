@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using CompMathLibrary.Methods.Base;
+using System.Linq;
 
 namespace CompMathLibrary.Methods
 {
@@ -9,25 +10,26 @@ namespace CompMathLibrary.Methods
 	{
 		protected double[][] matrixA;
 		protected double[] vectorB;
-		protected double[] startApproximation;
+		protected double[] previousApproximation;
 		protected double precision;
 		protected int numberOfIterations;
 		internal JacobiMethod(double[][] matrix, double[] vector, double[] startApproximation, double precision)
 		{
 			matrixA = CloneMatrix(matrix);
 			vectorB = (double[])vector.Clone();
-			this.startApproximation = (double[])startApproximation.Clone();
+			this.previousApproximation = (double[])startApproximation.Clone();
 			this.precision = precision;
 			numberOfIterations = 0;
 		}
 		public override Answer Solve()
 		{
-			double[] nextApproximation = new double[startApproximation.Length];
+			double[] nextApproximation = new double[previousApproximation.Length];
 			double strSum;
+			previousApproximation.CopyTo(nextApproximation, 0);
 			do
 			{
 				numberOfIterations++;
-				startApproximation.CopyTo(nextApproximation, 0);
+				nextApproximation.CopyTo(previousApproximation, 0);
 				for (int i = 0; i < matrixA.GetLength(0); i++)
 				{
 					strSum = 0;
@@ -35,26 +37,45 @@ namespace CompMathLibrary.Methods
 					{
 						if (j != i)
 						{
-							strSum += (matrixA[i][j] * startApproximation[j]) / matrixA[i][i];
+							strSum += (matrixA[i][j] * previousApproximation[j])/* / matrixA[i][i]*/;
+							if (double.IsInfinity(strSum))
+							{
+								throw new Exception("Метод расходится. Число итераций " + numberOfIterations);
+							}
 						}
 					}
-					nextApproximation[i] = strSum * (-1) + vectorB[i] / matrixA[i][i];
+					nextApproximation[i] = (vectorB[i] /*/ matrixA[i][i]*/ - strSum) / matrixA[i][i];
+					if (double.IsInfinity(nextApproximation[i]))
+					{
+						throw new Exception("Метод расходится. Число итераций " + numberOfIterations);
+					}
 				}
-			} while (!IsPrecisionAchieved(startApproximation, nextApproximation));
+			} while (!IsPrecisionAchieved(previousApproximation, nextApproximation));
 			IterativeAnswer answer = new IterativeAnswer();
 			answer.Solution.Add(nextApproximation);
 			answer.AnswerStatus = AnswerStatus.OneSolution;
 			answer.NumberOfIterations = numberOfIterations;
+			answer.ConditionOfDiagonalDominance = IsTheConditionOfDiagonalDominanceSatisfied();
 			return answer;
 		}
-		protected bool IsPrecisionAchieved(double[] previousApproximation, double[] currentApproximation)
+		protected virtual bool IsPrecisionAchieved(double[] previousApproximation, double[] currentApproximation) =>
+			previousApproximation.Zip(currentApproximation, (prev, current) => prev - current)
+				.Max((number) => Math.Abs(number)) < precision;
+		protected bool IsTheConditionOfDiagonalDominanceSatisfied()
 		{
-			for (int i = 0; i < previousApproximation.Length; i++)
+			double diagonal;
+			double sum;
+			for (int i = 0; i < matrixA.GetLength(0); i++)
 			{
-				if (Math.Abs(previousApproximation[i] - currentApproximation[i]) > precision)
+				diagonal = Math.Abs(matrixA[i][i]);
+				sum = 0;
+				for (int j = 0; j < matrixA[i].Length; j++)
 				{
-					return false;
+					if (i != j)
+						sum += Math.Abs(matrixA[i][j]);
 				}
+				if (diagonal <= sum)
+					return false;
 			}
 			return true;
 		}
