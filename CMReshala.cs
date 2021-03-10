@@ -104,5 +104,23 @@ namespace CompMathLibrary
 			}
 			return gilbertMatrix;
 		}
+		public bool IsTheConditionOfDiagonalDominanceSatisfied(double[][] matrix)
+		{
+			double diagonal;
+			double sum;
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				diagonal = Math.Abs(matrix[i][i]);
+				sum = 0;
+				for (int j = 0; j < matrix[i].Length; j++)
+				{
+					if (i != j)
+						sum += Math.Abs(matrix[i][j]);
+				}
+				if (diagonal <= sum)
+					return false;
+			}
+			return true;
+		}
 	}
 }
