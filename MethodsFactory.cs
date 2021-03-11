@@ -82,10 +82,10 @@ namespace CompMathLibrary
 				throw new ArgumentException("Invalid size of approximation vector");
 			if (precision < double.Epsilon)
 				throw new ArgumentException("Precision is VERY small");
-			if (AreThereZeroOnMainDiagonal(matrix))
+			if (IsThereZeroOnMainDiagonal(matrix))
 				throw new ArgumentException("Zeros on the main diagonal");
 		}
-		private bool AreThereZeroOnMainDiagonal(double[][] matrix)
+		private bool IsThereZeroOnMainDiagonal(double[][] matrix)
 		{
 			for (int i = 0; i < matrix.GetLength(0); i++)
 			{

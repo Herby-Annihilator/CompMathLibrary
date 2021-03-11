@@ -60,7 +60,7 @@ namespace CompMathLibrary.Methods
 		}
 		protected virtual bool IsPrecisionAchieved(double[] previousApproximation, double[] currentApproximation) =>
 			previousApproximation.Zip(currentApproximation, (prev, current) => prev - current)
-				.Max((number) => Math.Abs(number)) < precision;
+				.Max((number) => Math.Abs(number)) <= precision;
 		protected bool IsTheConditionOfDiagonalDominanceSatisfied()
 		{
 			double diagonal;
