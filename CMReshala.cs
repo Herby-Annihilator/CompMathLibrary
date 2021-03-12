@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using CompMathLibrary.Methods.Base;
 using CompMathLibrary.Methods;
+using System.Linq;
 
 namespace CompMathLibrary
 {
@@ -48,7 +49,7 @@ namespace CompMathLibrary
 			}
 			return norm;
 		}
-		public double[][] CreateRandomMatrix(int rowsCount, int colsCount)
+		public double[][] CreateRandomMatrix(int rowsCount, int colsCount, int min, int max)
 		{
 			Random random = new Random();
 			double[][] matr = new double[rowsCount][];
@@ -57,7 +58,7 @@ namespace CompMathLibrary
 				matr[i] = new double[colsCount];
 				for (int j = 0; j < colsCount; j++)
 				{
-					matr[i][j] = random.Next();
+					matr[i][j] = random.Next(min, max);
 				}
 			}
 			return matr;
@@ -121,6 +122,44 @@ namespace CompMathLibrary
 					return false;
 			}
 			return true;
+		}
+
+		public double[][] CreateMatrixWithoutDiagonalDominance(int rowsCount, int min, int max)
+		{
+			Random random = new Random();
+			double[][] matrix = CreateRandomMatrix(rowsCount, rowsCount, min, max);
+			if (IsTheConditionOfDiagonalDominanceSatisfied(matrix))
+			{
+				int randomStr = random.Next(0, rowsCount);
+				matrix[randomStr][randomStr] = matrix[randomStr].Sum((number) =>
+				Math.Abs(number));
+			}
+			return matrix;
+		}
+		public double CalculateDiagonalDominance(double[][] matrix)
+		{
+			double maxDiagonal = 0;
+			double ratio;
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				ratio = (matrix[i].Sum((number) => Math.Abs(number)) - Math.Abs(matrix[i][i]))
+					/ Math.Abs(matrix[i][i]);
+				if (ratio > maxDiagonal)
+				{
+					maxDiagonal = ratio;
+				}
+			}
+			return maxDiagonal;
+		}
+		public double[] CreateRandomVector(int size, int min, int max)
+		{
+			Random random = new Random();
+			double[] vector = new double[size];
+			for (int i = 0; i < size; i++)
+			{
+				vector[i] = random.Next(min, max);
+			}
+			return vector;
 		}
 	}
 }

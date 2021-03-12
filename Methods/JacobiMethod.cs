@@ -40,14 +40,14 @@ namespace CompMathLibrary.Methods
 							strSum += (matrixA[i][j] * previousApproximation[j])/* / matrixA[i][i]*/;
 							if (double.IsInfinity(strSum))
 							{
-								throw new Exception("Метод расходится. Число итераций " + numberOfIterations + " точность " + precision);
+								throw new NoSolutionException("Метод расходится. Число итераций " + numberOfIterations + " точность " + precision);
 							}
 						}
 					}
 					nextApproximation[i] = (vectorB[i] /*/ matrixA[i][i]*/ - strSum) / matrixA[i][i];
 					if (double.IsInfinity(nextApproximation[i]))
 					{
-						throw new Exception("Метод расходится. Число итераций " + numberOfIterations + " точность " + precision);
+						throw new NoSolutionException("Метод расходится. Число итераций " + numberOfIterations + " точность " + precision);
 					}
 				}
 			} while (!IsPrecisionAchieved(previousApproximation, nextApproximation));
