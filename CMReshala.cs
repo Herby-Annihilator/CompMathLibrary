@@ -4,6 +4,7 @@ using System.Text;
 using CompMathLibrary.Methods.Base;
 using CompMathLibrary.Methods;
 using System.Linq;
+using CompMathLibrary.Creators.MethodCreators.Base;
 
 namespace CompMathLibrary
 {
@@ -11,14 +12,13 @@ namespace CompMathLibrary
 	{
 		private const double DEFAULT_PRECISION = 0.000001;
 		private MethodsFactory Factory { get; set; }
-		public Answer SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, DirectMethodType method)
+		public Answer SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, DirectMethodsCreator creator)
 		{
-			return Factory.Build(matrixA, vectorB, method).Solve();
+			return Factory.Build(matrixA, vectorB, creator).Solve();
 		}
 		public IterativeAnswer SolveSystemOfLinearAlgebraicEquationsIteratively(double[][] matrixA,
-			double[] vectorB, double[] approximation, double precision = DEFAULT_PRECISION,
-			IterativeMethodType type = IterativeMethodType.Jacobi) =>
-			(IterativeAnswer)Factory.Build(matrixA, vectorB, approximation, precision, type).Solve();
+			double[] vectorB, double[] approximation, double precision, IterativeMethodsCreator creator) =>
+			(IterativeAnswer)Factory.Build(matrixA, vectorB, approximation, precision, creator).Solve();
 		public CMReshala()
 		{
 			Factory = new MethodsFactory();
@@ -63,7 +63,7 @@ namespace CompMathLibrary
 			}
 			return matr;
 		}
-		public double[][] GetReversedMatrix(double[][] sourceMatrix, DirectMethodType methodType = DirectMethodType.Gauss)
+		public double[][] GetReversedMatrix(double[][] sourceMatrix, DirectMethodsCreator creator)
 		{
 			double[][] reversedMatrix = new double[sourceMatrix.GetLength(0)][];
 			for (int i = 0; i < reversedMatrix.Length; i++)
@@ -78,7 +78,7 @@ namespace CompMathLibrary
 			{
 				tmpVector[nextIndex] = 1;
 				currentSolution = SolveSystemOfLinearAlgebraicEquations(sourceMatrix, tmpVector,
-					methodType).Solution;
+					creator).Solution;
 				for (int j = 0; j < reversedMatrix.GetLength(0); j++)
 				{
 					reversedMatrix[j][i] = currentSolution[0][j];
