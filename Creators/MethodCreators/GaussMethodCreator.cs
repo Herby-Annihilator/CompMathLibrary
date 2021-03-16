@@ -14,5 +14,9 @@ namespace CompMathLibrary.Creators.MethodCreators
 			DefaultCheck(matrix, vector);
 			return new GaussMethod(matrix, vector);
 		}
+		public override string ToString()
+		{
+			return "Gauss method";
+		}
 	}
 }

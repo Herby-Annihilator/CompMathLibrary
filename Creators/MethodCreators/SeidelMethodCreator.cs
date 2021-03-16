@@ -16,5 +16,6 @@ namespace CompMathLibrary.Creators.MethodCreators
 			CheckIterativeConditions(matrix, vector, approximation, precision);
 			return new JacobiMethod(matrix, vector, approximation, precision);
 		}
+		public override string ToString() => "Seidel method";
 	}
 }

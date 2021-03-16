@@ -22,5 +22,6 @@ namespace CompMathLibrary.Creators.MethodCreators
 			}
 			return new SquareRootMethod(matrix, vector);
 		}
+		public override string ToString() => "Square root method";
 	}
 }
