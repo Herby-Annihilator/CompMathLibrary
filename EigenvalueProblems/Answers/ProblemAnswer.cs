@@ -4,9 +4,8 @@ using System.Text;
 
 namespace CompMathLibrary.EigenvalueProblems.Answers
 {
-	public class PartialProblemAnswer : Answer
+	public class ProblemAnswer
 	{
-		public int IterationCount { get; set; }
-		public double[] Eigenvector { get; set; }
+
 	}
 }
