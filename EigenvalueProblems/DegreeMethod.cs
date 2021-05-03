@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CompMathLibrary.EigenvalueProblems
 {
-	internal class DegreeMethod : EigenvalueProblem<DegreeMethodAnswer>
+	public class DegreeMethod : EigenvalueProblem<DegreeMethodAnswer>
 	{
 		protected double[] _approximation;
 		protected double[] _nextApproximation;
@@ -25,20 +25,20 @@ namespace CompMathLibrary.EigenvalueProblems
 
 		internal override DegreeMethodAnswer Solve()
 		{
-			int numberOfIterations = 1;
-			double nextLambda;
-			NormalizeVector(_previousApproximation);
-			double previousLambda = DoIterationAndReturnNextLambda();
+			int numberOfIterations = 0;
+			double nextLambda = 100;
+			double previousLambda;
 			do
 			{
 				numberOfIterations++;
+				previousLambda = nextLambda;
 				nextLambda = DoIterationAndReturnNextLambda();
 			} while (!IsPrecisionAchived(previousLambda, nextLambda));
 			DegreeMethodAnswer answer = new DegreeMethodAnswer()
 			{
 				IterationsCount = numberOfIterations,
 				Eigenvalue = nextLambda,
-				Eigenvector = (double[])_nextApproximation.Clone()
+				Eigenvector = (double[])_previousApproximation.Clone()
 			};
 			return answer;
 		}
@@ -46,9 +46,9 @@ namespace CompMathLibrary.EigenvalueProblems
 		{
 			double nextLambda;
 			_nextApproximation = GetNextVector(_previousApproximation);
-			NormalizeVector(_nextApproximation);
 			nextLambda = GetNextLambda(_previousApproximation, _nextApproximation);
 			_previousApproximation = (double[])_nextApproximation.Clone();
+			NormalizeVector(_previousApproximation);
 			return nextLambda;
 		}
 		protected double[] GetNextVector(double[] startVector) =>

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace CompMathLibrary.EigenvalueProblems
 {
-	internal class ReversedDegreeMethod : DegreeMethod
+	public class ReversedDegreeMethod : DegreeMethod
 	{
 		private readonly double _startLambda;
 		protected ReversedDegreeMethod(double[][] matrix, double precision) : base(matrix, precision)
@@ -22,12 +22,14 @@ namespace CompMathLibrary.EigenvalueProblems
 
 		internal override DegreeMethodAnswer Solve()
 		{
-			double[][] workingMatrix = _matrix.SubtractOrAddMatrix(
-				_matrix.GetTheIdentityMatrix().MultiplyByANumber(_startLambda, (a, b) => a * b),
-				(a, b) => a - b);
+			int size = _matrix.GetLength(0);
+			for (int i = 0; i < size; i++)
+			{
+				_matrix[i][i] -= _startLambda;
+			}
 			int iterationNumber = 0;
-			double nextLambda;
-			double previousLambda = _startLambda;
+			double nextLambda = _startLambda;
+			double previousLambda;
 			double numerator;
 			double denominator;
 			GaussMethod gaussMethod;
@@ -35,7 +37,8 @@ namespace CompMathLibrary.EigenvalueProblems
 			do
 			{
 				iterationNumber++;
-				gaussMethod = new GaussMethod(workingMatrix, _previousApproximation);
+				previousLambda = nextLambda;
+				gaussMethod = new GaussMethod(_matrix, _previousApproximation);
 				answer = gaussMethod.Solve();
 				if (answer.AnswerStatus != AnswerStatus.OneSolution)
 				{
@@ -47,12 +50,11 @@ namespace CompMathLibrary.EigenvalueProblems
 					};
 				}
 				_nextApproximation = answer.Solution[0];
+				numerator = DotProductOfVectors(_previousApproximation, _previousApproximation);
+				denominator = DotProductOfVectors(_nextApproximation, _previousApproximation);
+				nextLambda = _startLambda + (numerator / denominator);
 				NormalizeVector(_nextApproximation);
-				numerator = DotProductOfVectors(_nextApproximation, _previousApproximation);
-				denominator = DotProductOfVectors(_previousApproximation, _previousApproximation);
-				nextLambda = previousLambda + (numerator / denominator);
-				_previousApproximation = (double[])_nextApproximation.Clone();
-				previousLambda = nextLambda;
+				_previousApproximation = (double[])_nextApproximation.Clone();	
 			} while (!IsPrecisionAchived(previousLambda, nextLambda));
 			return new DegreeMethodAnswer()
 			{

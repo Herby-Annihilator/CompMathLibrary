@@ -5,6 +5,9 @@ using CompMathLibrary.Methods.Base;
 using CompMathLibrary.Methods;
 using System.Linq;
 using CompMathLibrary.Creators.MethodCreators.Base;
+using CompMathLibrary.Creators.MethodCreators;
+using CompMathLibrary.EigenvalueProblems;
+using CompMathLibrary.EigenvalueProblems.Answers;
 
 namespace CompMathLibrary
 {
@@ -160,6 +163,17 @@ namespace CompMathLibrary
 				vector[i] = random.Next(min, max);
 			}
 			return vector;
+		}
+
+		public DegreeMethodAnswer FindLargestEigenvalueAbsAndEigenvector(double[][] matrix, double[] startVector, double precision)
+		{
+			DegreeMethod degreeMethod = Factory.Build(matrix, startVector, precision, new DegreeMethodCreator());
+			return degreeMethod.Solve();
+		}
+		public DegreeMethodAnswer FindClosestEigenvalueToAGivenOne(double[][] matrix, double[] vector, double precision, double startLambda)
+		{
+			ReversedDegreeMethod reversedDegreeMethod = Factory.Build(matrix, vector, precision, startLambda, new ReversedDegreeMethodCreator());
+			return reversedDegreeMethod.Solve();
 		}
 	}
 }

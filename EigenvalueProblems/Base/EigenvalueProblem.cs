@@ -6,7 +6,7 @@ using System.Text;
 
 namespace CompMathLibrary.EigenvalueProblems.Base
 {
-	internal abstract class EigenvalueProblem<TAnswer> where TAnswer: ProblemAnswer
+	public abstract class EigenvalueProblem<TAnswer> where TAnswer: ProblemAnswer
 	{
 		protected double[][] _matrix;
 		protected double _precision;
