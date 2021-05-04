@@ -80,5 +80,22 @@ namespace CompMathLibrary.Extensions
 			}
 			return toReturn;
 		}	
+
+		public static int IndexOf<T>(this T[] arr, T element, Func<T, T, int> comparer)
+		{
+			for (int i = 0; i < arr.Length; i++)
+			{
+				if (comparer(arr[i], element) == 0)
+					return i;
+			}
+			return -1;
+		}
+		public static void FillBy<T>(this T[] arr, T element)
+		{
+			for (int i = 0; i < arr.Length; i++)
+			{
+				arr[i] = element;
+			}
+		}
 	}
 }
