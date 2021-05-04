@@ -14,6 +14,7 @@ namespace CompMathLibrary
 	public class CMReshala
 	{
 		private const double DEFAULT_PRECISION = 0.000001;
+		private const double FINE = 100;  // штраф для прибавки к главной диагонали матрицы, чтобы найти максимльное/минимальное собственное число
 		private MethodsFactory Factory { get; set; }
 		public Answer SolveSystemOfLinearAlgebraicEquations(double[][] matrixA, double[] vectorB, DirectMethodsCreator creator)
 		{
@@ -82,6 +83,8 @@ namespace CompMathLibrary
 				tmpVector[nextIndex] = 1;
 				currentSolution = SolveSystemOfLinearAlgebraicEquations(sourceMatrix, tmpVector,
 					creator).Solution;
+				if (currentSolution == null)
+					throw new Exception("Reversed matrix was not found");
 				for (int j = 0; j < reversedMatrix.GetLength(0); j++)
 				{
 					reversedMatrix[j][i] = currentSolution[0][j];
@@ -172,8 +175,47 @@ namespace CompMathLibrary
 		}
 		public DegreeMethodAnswer FindClosestEigenvalueToAGivenOne(double[][] matrix, double[] vector, double precision, double startLambda)
 		{
-			ReversedDegreeMethod reversedDegreeMethod = Factory.Build(matrix, vector, precision, startLambda, new ReversedDegreeMethodCreator());
-			return reversedDegreeMethod.Solve();
+			double[][] workingMatrix = new double[matrix.GetLength(0)][];
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				workingMatrix[i] = (double[])matrix[i].Clone();
+				workingMatrix[i][i] -= startLambda;
+			}
+			DegreeMethod reversedDegreeMethod = Factory.Build(GetReversedMatrix(workingMatrix, new GaussMethodCreator()), vector, precision, new DegreeMethodCreator());
+			var answer = reversedDegreeMethod.Solve();
+			answer.Eigenvalue = startLambda + 1 / answer.Eigenvalue;
+			return answer;
+		}
+
+		public DegreeMethodAnswer FindMaxEigenvalue(double[][] matrix, double[] vector, double precision)
+		{
+			double[][] workingMatrix = new double[matrix.GetLength(0)][];
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				workingMatrix[i] = (double[])matrix[i].Clone();
+				workingMatrix[i][i] += FINE;
+			}
+			DegreeMethod degreeMethod = Factory.Build(workingMatrix, vector, precision, new DegreeMethodCreator());
+			var answer = degreeMethod.Solve();
+			answer.Eigenvalue -= FINE;
+			return answer;
+		}
+		public DegreeMethodAnswer FindMinEigenvalue(double[][] matrix, double[] vector, double precision)
+		{
+			double[][] workingMatrix = new double[matrix.GetLength(0)][];
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				workingMatrix[i] = (double[])matrix[i].Clone();
+				workingMatrix[i][i] -= FINE;
+			}
+			DegreeMethod degreeMethod = Factory.Build(workingMatrix, vector, precision, new DegreeMethodCreator());
+			var answer = degreeMethod.Solve();
+			answer.Eigenvalue += FINE;
+			return answer;
+		}
+		public DegreeMethodAnswer FindMinAbsEigenvalue(double[][] matrix, double[] vector, double precision)
+		{
+			return FindClosestEigenvalueToAGivenOne(matrix, vector, precision, 0);
 		}
 	}
 }
