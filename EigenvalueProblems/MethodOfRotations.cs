@@ -11,18 +11,22 @@ namespace CompMathLibrary.EigenvalueProblems
 	public class MethodOfRotations : EigenvalueProblem<MethodOfRotationsAnswer>
 	{
 		private double[] _sumVector;
+		private double[][] _clone;
 		protected MethodOfRotations(double[][] matrix, double precision) : base(matrix, precision)
 		{
 			_sumVector = new double[matrix.GetLength(0)];
+			_clone = matrix.CloneMatrix();
 		}
 
 		internal override void Refresh()
 		{
 			_sumVector.FillBy(0);
+			_matrix = _clone.CloneMatrix();
 		}
 
 		internal override MethodOfRotationsAnswer Solve()
 		{
+			double[][] dMatrix = _matrix.GetTheIdentityMatrix();
 			FillSumVector();
 			int k = _sumVector.IndexOf(_sumVector.Max(), (first, second) =>
 			{
@@ -31,8 +35,30 @@ namespace CompMathLibrary.EigenvalueProblems
 				return 0;
 			});
 			int l = FindMaxAbsElementIndexInSpecifiedRow(k);
-			
+			double s = FindSumOfNonDiagonalElements();
+			double[][] currentOrthogonalMatrix;
+			double alpha, beta, mu;
+			while (s > _precision)
+			{
+				mu = FindMu(k, l);
+				alpha = FindAlphaCoefficient(mu);
+				beta = FindBetaCoefficient(mu);
+				currentOrthogonalMatrix = CreateSpecialUMatrix(alpha, beta, k, l);
+				dMatrix = dMatrix.MultiplyBy(currentOrthogonalMatrix, (first, second) => first * second, (first, second) => first + second);
+				_matrix = RotateMatrix(_matrix, currentOrthogonalMatrix);
+				s = FindSumOfNonDiagonalElements();
+				ChangeSumVector(k, l);
+				k = _sumVector.IndexOf(_sumVector.Max(), (first, second) =>
+				{
+					if (first > second) return 1;
+					if (first < second) return -1;
+					return 0;
+				});
+				l = FindMaxAbsElementIndexInSpecifiedRow(k);
+			}
+			MethodOfRotationsAnswer answer = new MethodOfRotationsAnswer();
 
+			return answer;
 		}
 			
 		private void FillSumVector()
@@ -89,7 +115,27 @@ namespace CompMathLibrary.EigenvalueProblems
 			result[k][l] = -1 * beta;
 			return result;
 		}
+		
 		private double FindSumOfNonDiagonalElements() => _sumVector.Sum();
 		
+		private double[][] RotateMatrix(double[][] matrixToRotate, double[][] specialUMatrix)
+		{
+			double[][] result = specialUMatrix.FindTransposedMatrix().MultiplyBy(matrixToRotate, (first, second) => first * second, (first, second) => first + second);
+			result = result.MultiplyBy(specialUMatrix, (first, second) => first * second, (first, second) => first + second);
+			return result;
+		}
+		private void ChangeSumVector(int k, int l)
+		{
+			double sumK = 0, sumL = 0;
+			for (int i = 0; i < _sumVector.Length; i++)
+			{
+				if (i != k)
+					sumK += _matrix[k][i] * _matrix[k][i];
+				if (i != l)
+					sumL += _matrix[l][i] * _matrix[l][i];
+			}
+			_sumVector[k] = sumK;
+			_sumVector[l] = sumL;
+		}
 	}
 }
