@@ -82,7 +82,8 @@ namespace CompMathLibrary.EigenvalueProblems
 		private double RowSumWithoutDiagonalElement(int rowIndex)
 		{
 			double sum = 0;
-			for (int i = 0; i < _matrix[i].Length; i++)
+			int size = _matrix[rowIndex].Length;
+			for (int i = 0; i < size; i++)
 			{
 				if (i != rowIndex)
 				{
@@ -96,7 +97,7 @@ namespace CompMathLibrary.EigenvalueProblems
 		{
 			int index = 0;
 			double maxElement = Math.Abs(_matrix[rowIndex][index]);
-			for (int i = 1; i < _matrix[i].Length; i++)
+			for (int i = 1; i < _matrix[rowIndex].Length; i++)
 			{
 				if (rowIndex != i && maxElement < Math.Abs(_matrix[rowIndex][i]))
 				{
@@ -110,11 +111,9 @@ namespace CompMathLibrary.EigenvalueProblems
 		private double FindMu(int kIndex, int lIndex) =>
 			(2 * _matrix[kIndex][lIndex]) / (_matrix[kIndex][kIndex] - _matrix[lIndex][lIndex]);
 
-		private double FindAlphaCoefficient(double mu) =>
-			Math.Sqrt(0.5 * (1 + (1 / Math.Sqrt(1 + mu * mu))));
+		private double FindAlphaCoefficient(double mu) => double.IsNaN(mu) ? Math.Sqrt(0.5) : Math.Sqrt(0.5 * (1 + (1 / Math.Sqrt(1 + mu * mu))));
 
-		private double FindBetaCoefficient(double mu) =>
-			Math.Sign(mu) * Math.Sqrt(0.5 * (1 - (1 / Math.Sqrt(1 + mu * mu))));
+		private double FindBetaCoefficient(double mu) => double.IsNaN(mu) ? Math.Sqrt(0.5) : Math.Sign(mu) * Math.Sqrt(0.5 * (1 - (1 / Math.Sqrt(1 + mu * mu))));
 		
 		private double[][] CreateSpecialUMatrix(double alpha, double beta, int k, int l)
 		{
@@ -122,7 +121,7 @@ namespace CompMathLibrary.EigenvalueProblems
 			result[k][k] = alpha;
 			result[l][l] = alpha;
 			result[l][k] = beta;
-			result[k][l] = -1 * beta;
+			result[k][l] = (-1) * beta;
 			return result;
 		}
 		
@@ -130,7 +129,8 @@ namespace CompMathLibrary.EigenvalueProblems
 		
 		private double[][] RotateMatrix(double[][] matrixToRotate, double[][] specialUMatrix)
 		{
-			double[][] result = specialUMatrix.FindTransposedMatrix().MultiplyBy(matrixToRotate, (first, second) => first * second, (first, second) => first + second);
+			double[][] result = specialUMatrix.FindTransposedMatrix();
+			result = result.MultiplyBy(matrixToRotate, (first, second) => first * second, (first, second) => first + second);
 			result = result.MultiplyBy(specialUMatrix, (first, second) => first * second, (first, second) => first + second);
 			return result;
 		}
