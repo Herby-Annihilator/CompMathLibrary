@@ -6,8 +6,8 @@ namespace CompMathLibrary.EigenvalueProblems.Answers
 {
 	public class MethodOfRotationsAnswer : ProblemAnswer
 	{
-		public double[] Eigenvalues;
-		public double[][] Eigenvectors;
-		public double[][] Residuals;
+		public double[] Eigenvalues { get; set; }
+		public double[][] Eigenvectors { get; set; }
+		public double[][] Residuals { get; set; }
 	}
 }

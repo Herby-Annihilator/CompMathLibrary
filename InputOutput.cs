@@ -66,7 +66,7 @@ namespace CompMathLibrary
 				AppendFirstFileToSecondFile("vectorB.txt", fileName, "\r\n");
 			}			
 		}
-		private static void SaveMatrixToFile(string fileName, double[][] matrix)
+		public static void SaveMatrixToFile(string fileName, double[][] matrix)
 		{
 			StreamWriter writer = new StreamWriter(fileName);
 			for (int i = 0; i < matrix.GetLength(0); i++)
@@ -95,14 +95,14 @@ namespace CompMathLibrary
 		{
 			return attributes & ~attributesToRemove;
 		}
-		private static void SaveVectorToHiddenFile(string fileName, double[] vector)
+		public static void SaveVectorToHiddenFile(string fileName, double[] vector)
 		{
 			if (File.Exists(fileName))
 				File.Delete(fileName);
 			SaveVectorToFile(fileName, vector);
 			File.SetAttributes(fileName, File.GetAttributes(fileName) | FileAttributes.Hidden);
 		}
-		private static void SaveMatrixToHiddenFile(string fileName, double[][] matrix)
+		public static void SaveMatrixToHiddenFile(string fileName, double[][] matrix)
 		{
 			if (File.Exists(fileName))
 				File.Delete(fileName);
@@ -110,7 +110,7 @@ namespace CompMathLibrary
 			File.SetAttributes(fileName, File.GetAttributes(fileName) | FileAttributes.Hidden);
 		}
 		
-		private static void SaveVectorToFile(string fileName, double[] vector)
+		public static void SaveVectorToFile(string fileName, double[] vector)
 		{
 			StreamWriter writer = new StreamWriter(fileName);
 			for (int i = 0; i < vector.Length; i++)
