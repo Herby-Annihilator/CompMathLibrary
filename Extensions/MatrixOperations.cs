@@ -54,5 +54,28 @@ namespace CompMathLibrary.Extensions
 			}
 			return result;
 		}
+
+		public static T[] MultiplyByColumn<T>(this T[][] matrix, T[] vector, Func<T, T, T> howToMultiply, Func<T, T, T> howToAdd)
+		{
+			T[] result = new T[vector.Length];
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				for (int j = 0; j < vector.Length; j++)
+				{
+					result[i] = howToAdd(result[i], howToMultiply(matrix[i][j], vector[j]));
+				}
+			}
+			return result;
+		}
+
+		public static T[] PresentSpecifiedColumnAsVector<T>(this T[][] matrix, int columnIndex)
+		{
+			T[] result = new T[matrix.GetLength(0)];
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				result[i] = matrix[i][columnIndex];
+			}
+			return result;
+		}
 	}
 }

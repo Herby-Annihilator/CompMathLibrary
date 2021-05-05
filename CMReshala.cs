@@ -217,5 +217,10 @@ namespace CompMathLibrary
 		{
 			return FindClosestEigenvalueToAGivenOne(matrix, vector, precision, 0);
 		}
+
+		public MethodOfRotationsAnswer SolveFullEigenValueProblem(double[][] matrix, double precision)
+		{
+			return Factory.Build(matrix, precision, new MethodOfRotationsCreator()).Solve();
+		}
 	}
 }

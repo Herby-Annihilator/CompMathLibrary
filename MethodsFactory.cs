@@ -29,5 +29,10 @@ namespace CompMathLibrary
 		{
 			return (ReversedDegreeMethod)creator.Create(matrix, startVector, precision, startLambda);
 		}
+
+		public MethodOfRotations Build(double[][] matrix, double precision, MethodOfRotationsCreator creator)
+		{
+			return creator.Create(matrix, precision);
+		}
 	}
 }

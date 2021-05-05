@@ -12,7 +12,7 @@ namespace CompMathLibrary.EigenvalueProblems
 	{
 		private double[] _sumVector;
 		private double[][] _clone;
-		protected MethodOfRotations(double[][] matrix, double precision) : base(matrix, precision)
+		internal MethodOfRotations(double[][] matrix, double precision) : base(matrix, precision)
 		{
 			_sumVector = new double[matrix.GetLength(0)];
 			_clone = matrix.CloneMatrix();
@@ -57,7 +57,17 @@ namespace CompMathLibrary.EigenvalueProblems
 				l = FindMaxAbsElementIndexInSpecifiedRow(k);
 			}
 			MethodOfRotationsAnswer answer = new MethodOfRotationsAnswer();
-
+			answer.Eigenvalues = DiagonalElementsAsVector(_matrix);
+			answer.Eigenvectors = new double[answer.Eigenvalues.Length][];
+			for (int i = 0; i < answer.Eigenvalues.Length; i++)
+			{
+				answer.Eigenvectors[i] = dMatrix.PresentSpecifiedColumnAsVector(i);
+			}
+			answer.Residuals = new double[answer.Eigenvalues.Length][];
+			for (int i = 0; i < answer.Eigenvalues.Length; i++)
+			{
+				answer.Residuals[i] = _clone.MultiplyByColumn(answer.Eigenvectors[i], (first, second) => first * second, (first, second) => first + second).DoOperationWithVector(answer.Eigenvectors[i].MultiplyBy(answer.Eigenvalues[i]), (first, second) => first - second);
+			}
 			return answer;
 		}
 			
@@ -136,6 +146,16 @@ namespace CompMathLibrary.EigenvalueProblems
 			}
 			_sumVector[k] = sumK;
 			_sumVector[l] = sumL;
+		}
+
+		private double[] DiagonalElementsAsVector(double[][] matrix)
+		{
+			double[] result = new double[matrix.GetLength(0)];
+			for (int i = 0; i < matrix.GetLength(0); i++)
+			{
+				result[i] = matrix[i][i];
+			}
+			return result;
 		}
 	}
 }

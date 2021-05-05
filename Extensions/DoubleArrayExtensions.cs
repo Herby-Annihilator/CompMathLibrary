@@ -81,6 +81,16 @@ namespace CompMathLibrary.Extensions
 			return toReturn;
 		}	
 
+		public static double[] MultiplyBy(this double[] vector, double number)
+		{
+			double[] result = new double[vector.Length];
+			for (int i = 0; i < vector.Length; i++)
+			{
+				result[i] = vector[i] * number;
+			}
+			return result;
+		}
+
 		public static int IndexOf<T>(this T[] arr, T element, Func<T, T, int> comparer)
 		{
 			for (int i = 0; i < arr.Length; i++)
@@ -96,6 +106,21 @@ namespace CompMathLibrary.Extensions
 			{
 				arr[i] = element;
 			}
+		}
+
+		public static T[] DoOperationWithVector<T>(this T[] vector, T[] anotherVector, Func<T, T, T> operation)
+		{
+			int length;
+			if (vector.Length < anotherVector.Length)
+				length = vector.Length;
+			else
+				length = anotherVector.Length;
+			T[] result = new T[length];
+			for (int i = 0; i < length; i++)
+			{
+				result[i] = operation(vector[i], anotherVector[i]);
+			}
+			return result;
 		}
 	}
 }
