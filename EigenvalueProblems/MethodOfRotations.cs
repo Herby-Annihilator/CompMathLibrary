@@ -41,13 +41,13 @@ namespace CompMathLibrary.EigenvalueProblems
 			while (s > _precision)
 			{
 				mu = FindMu(k, l);
-				alpha = FindAlphaCoefficient(mu);
-				beta = FindBetaCoefficient(mu);
+				alpha = FindAlphaCoefficient(mu, k, l);
+				beta = FindBetaCoefficient(mu, k, l);
 				currentOrthogonalMatrix = CreateSpecialUMatrix(alpha, beta, k, l);
-				dMatrix = dMatrix.MultiplyBy(currentOrthogonalMatrix, (first, second) => first * second, (first, second) => first + second);
+				dMatrix = MultMatrixByMatrix(dMatrix, currentOrthogonalMatrix);
 				_matrix = RotateMatrix(_matrix, currentOrthogonalMatrix);
-				s = FindSumOfNonDiagonalElements();
 				ChangeSumVector(k, l);
+				s = FindSumOfNonDiagonalElements();				
 				k = _sumVector.IndexOf(_sumVector.Max(), (first, second) =>
 				{
 					if (first > second) return 1;
@@ -111,9 +111,9 @@ namespace CompMathLibrary.EigenvalueProblems
 		private double FindMu(int kIndex, int lIndex) =>
 			(2 * _matrix[kIndex][lIndex]) / (_matrix[kIndex][kIndex] - _matrix[lIndex][lIndex]);
 
-		private double FindAlphaCoefficient(double mu) => double.IsNaN(mu) ? Math.Sqrt(0.5) : Math.Sqrt(0.5 * (1 + (1 / Math.Sqrt(1 + mu * mu))));
+		private double FindAlphaCoefficient(double mu, int k, int l) => _matrix[k][k] == _matrix[l][l] ? Math.Sqrt(0.5) : Math.Sqrt(0.5 * (1 + (1 / Math.Sqrt(1 + mu * mu))));
 
-		private double FindBetaCoefficient(double mu) => double.IsNaN(mu) ? Math.Sqrt(0.5) : Math.Sign(mu) * Math.Sqrt(0.5 * (1 - (1 / Math.Sqrt(1 + mu * mu))));
+		private double FindBetaCoefficient(double mu,int k, int l) => _matrix[k][k] == _matrix[l][l] ? Math.Sqrt(0.5) : Math.Sign(mu) * Math.Sqrt(0.5 * (1 - (1 / Math.Sqrt(1 + mu * mu))));
 		
 		private double[][] CreateSpecialUMatrix(double alpha, double beta, int k, int l)
 		{
@@ -129,9 +129,9 @@ namespace CompMathLibrary.EigenvalueProblems
 		
 		private double[][] RotateMatrix(double[][] matrixToRotate, double[][] specialUMatrix)
 		{
-			double[][] result = specialUMatrix.FindTransposedMatrix();
-			result = result.MultiplyBy(matrixToRotate, (first, second) => first * second, (first, second) => first + second);
-			result = result.MultiplyBy(specialUMatrix, (first, second) => first * second, (first, second) => first + second);
+			double[][] result = FindTransposenMatrix(specialUMatrix);
+			result = MultMatrixByMatrix(result, matrixToRotate);
+			result = MultMatrixByMatrix(result, specialUMatrix);
 			return result;
 		}
 		private void ChangeSumVector(int k, int l)
@@ -157,5 +157,40 @@ namespace CompMathLibrary.EigenvalueProblems
 			}
 			return result;
 		}
+
+
+		double[][] MultMatrixByMatrix(double[][] matr, double[][] matr1) //умножить матрицу на матрицу
+		{
+			int n = matr.GetLength(0);
+			double[][] res = new double[n][];
+			for (int i = 0; i < n; i++)
+			{
+				res[i] = new double[n];
+				for (int j = 0; j < n; j++)
+				{
+					double sum = 0;
+					for (int k = 0; k < n; k++)
+					{
+						sum += matr[i][k] * matr1[k][j];
+					}
+					res[i][j] = sum;
+				}
+			}
+			return res;
+		}
+
+		double[][] FindTransposenMatrix(double[][] matr) //найти транспонированную матрицу
+		{
+			int n = matr.GetLength(0);
+			double[][] res = new double[n][];
+			for (int i = 0; i < n; i++)
+			{
+				res[i] = new double[n];
+				for (int j = 0; j < n; j++)
+					res[i][j] = matr[j][i];
+			}
+			return res;
+		}
+
 	}
 }
