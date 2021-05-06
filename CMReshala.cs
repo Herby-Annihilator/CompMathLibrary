@@ -222,5 +222,7 @@ namespace CompMathLibrary
 		{
 			return Factory.Build(matrix, precision, new MethodOfRotationsCreator()).Solve();
 		}
+
+
 	}
 }

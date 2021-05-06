@@ -7,6 +7,11 @@ namespace CompMathLibrary.Interpolation.Polynomials
 {
 	public class NewtonInterpolationPolynomial : InterpolationPolynomial
 	{
+		public NewtonInterpolationPolynomial()
+		{
+			Values = new double[0];
+			Arguments = new double[0];
+		}
 		public override double GetFunctionValueIn(double point)
 		{
 			double result = 0;

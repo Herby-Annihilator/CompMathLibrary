@@ -6,6 +6,8 @@ namespace CompMathLibrary.Interpolation.Polynomials.Base
 {
 	public abstract class InterpolationPolynomial
 	{
+		public virtual double[] Arguments { get => _arguments; set => _arguments = value; }
+		public virtual double[] Values { get => _values; set => _values = value; }
 		protected double[] _arguments;
 		protected double[] _values;
 		public abstract double GetFunctionValueIn(double point);

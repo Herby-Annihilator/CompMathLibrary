@@ -13,6 +13,8 @@ namespace CompMathLibrary.Interpolation.Polynomials
 			int size = _arguments.Length;
 			for (int k = 0; k < size; k++)
 			{
+				numerator = 1;
+				denominator = 1;
 				for (int j = 0; j < size; j++)
 				{
 					if (k != j)
@@ -21,7 +23,7 @@ namespace CompMathLibrary.Interpolation.Polynomials
 						denominator *= _arguments[k] - _arguments[j];
 					}
 				}
-				result += numerator * _values[k] / denominator;
+				result += (numerator * _values[k]) / denominator;
 			}
 			return result;
 		}
@@ -30,6 +32,12 @@ namespace CompMathLibrary.Interpolation.Polynomials
 		{
 			_arguments = (double[])arguments.Clone();
 			_values = (double[])values.Clone();
+		}
+
+		public LagrangeInterpolationPolynomial()
+		{
+			Arguments = new double[0];
+			Values = new double[0];
 		}
 
 		public override double[] GetFunctionValuesInPoints(double[] points)
