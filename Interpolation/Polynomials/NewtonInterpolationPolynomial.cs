@@ -50,9 +50,9 @@ namespace CompMathLibrary.Interpolation.Polynomials
 		public override double[] GetFunctionValuesInPoints(double[] points)
 		{
 			int size = GetMinSizeOfArrays(points, _values);
-			double[] result = new double[size];
+			double[] result = new double[points.Length];
 			double sum;
-			for (int i = 0; i < size; i++) 
+			for (int i = 0; i < points.Length; i++) 
 			{
 				sum = 0;
 				for (int j = 0; j < size; j++)
