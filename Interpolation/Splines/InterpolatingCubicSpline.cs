@@ -39,7 +39,7 @@ namespace CompMathLibrary.Interpolation.Splines
             List<double> betta = new List<double>();
             alpha.Add(0);
             betta.Add(0);
-            for (int i = 1; i < n - 1; i++) //считаем сначала С методом прогонки, вводим массивы alpha и betta
+            for (int i = 1; i < n - 1; i++) 
             {
                 double k1 = 2 * (h[i + 1] + h[i]);
                 double k2 = 6 * (((Values[i + 1] - Values[i]) / h[i + 1]) - ((Values[i] - Values[i - 1]) / h[i]));
@@ -47,13 +47,13 @@ namespace CompMathLibrary.Interpolation.Splines
                 alpha.Add(-h[i + 1] / divider);
                 betta.Add((k2 - h[i] * betta[i - 1]) / divider);
             }
-            //посчитали коэффициенты, теперь считаем c обратным ходом
+           
             c[0] = c[n - 1] = 0;
             for (int i = n - 2; i >= 1; i--)
             {
-                c[i] = c[i + 1] * alpha[i] + betta[i]; //тут в alpha и betta другие индексы, потому что в них на 2 элемента меньше
+                c[i] = c[i + 1] * alpha[i] + betta[i]; 
             }
-            //нашли c, теперь находим всё остальное
+            
             for (int i = 1; i < n; i++)
             {
                 a[i] = Values[i];
@@ -67,13 +67,13 @@ namespace CompMathLibrary.Interpolation.Splines
             int n = Arguments.Length;
             for (int i = 0; i < n - 1; i++)
             {
-                if (point >= Arguments[i] && point <= Arguments[i + 1]) //нашли, какому промежутку принадлежит аргумент
+                if (point >= Arguments[i] && point <= Arguments[i + 1]) 
                 {
                     double cur_diff = point - Arguments[i + 1];
                     return (a[i + 1] + b[i + 1] * cur_diff + c[i + 1] * cur_diff * cur_diff / 2 + d[i + 1] * cur_diff * cur_diff * cur_diff / 6);
                 }
             }
-            return 0;
+            return double.NaN;
         }
     }
 }

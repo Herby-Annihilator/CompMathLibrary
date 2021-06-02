@@ -30,8 +30,8 @@ namespace CompMathLibrary.Interpolation.Polynomials
 
 		public LagrangeInterpolationPolynomial(double[] arguments, double[] values)
 		{
-			_arguments = (double[])arguments.Clone();
-			_values = (double[])values.Clone();
+			_arguments = arguments;
+			_values = values;
 		}
 
 		public LagrangeInterpolationPolynomial()
