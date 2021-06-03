@@ -16,8 +16,7 @@ namespace CompMathLibrary.NonlinearEquations
 			List<RootInfo> result = new List<RootInfo>();
 			List<double> splitPoints = SplitSegment();
 			int segmetsCount = splitPoints.Count - 1;
-			double a, b;
-			double functionFromA, functionFromB, firtsDerivativeFromA, firtsDerivativeFromB, secondDerivativeFromA, secondDerivativeFromB;
+			double a, b, c = 0, x0 = 0;  // из х0 - касательная, из с - хорда
 			int iterationsCount;
 			for (int i = 0; i < segmetsCount; i++)
 			{
@@ -28,35 +27,22 @@ namespace CompMathLibrary.NonlinearEquations
 				{
 					if (!(firstDerivative(a) == 0 || secondDerivative(a) == 0 || firstDerivative(b) == 0 || secondDerivative(b) == 0))
 					{
-						while (Math.Abs(a + b) < (Epsilon * 2))
+						if (function(a) * secondDerivative(a) > 0)
+						{
+							x0 = a;  // касательная из а
+							c = b;  // хорда из b
+						}
+						else if (function(b) * secondDerivative(b) > 0)
+						{
+							x0 = b; // касательная из b
+							c = a; // хорда из а
+						}
+						while (Math.Abs(x0 - c) > Epsilon)
 						{
 							iterationsCount++;
-
-							functionFromA = function(a);
-							firtsDerivativeFromA = firstDerivative(a);
-							secondDerivativeFromA = secondDerivative(a);
-
-							functionFromB = function(b);
-							firtsDerivativeFromB = firstDerivative(b);
-							secondDerivativeFromB = secondDerivative(b);
-
-							if (functionFromA * secondDerivativeFromA < 0)
-							{
-								a -= functionFromA * (a - b) / (functionFromA - functionFromB);
-							}
-							else if (functionFromA * secondDerivativeFromA > 0)
-							{
-								a -= functionFromA / firtsDerivativeFromA;
-							}
-							if (functionFromB * secondDerivativeFromB < 0)
-							{
-								b -= functionFromB * (b - a) / (functionFromB - functionFromA);
-							}
-							else if (functionFromB * secondDerivativeFromB > 0)
-							{
-								b -= functionFromB / firtsDerivativeFromB;
-							}
-						}
+							x0 -= function(x0) / firstDerivative(x0);
+							c -= function(c) * (x0 - c) / (function(x0) - function(c));
+						}						
 						result.Add(new RootInfo((a + b) / 2, iterationsCount));
 					}					
 				}
