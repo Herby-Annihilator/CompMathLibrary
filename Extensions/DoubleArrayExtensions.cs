@@ -122,5 +122,23 @@ namespace CompMathLibrary.Extensions
 			}
 			return result;
 		}
+
+		public static T[] Map<T>(this T[] arr, Func<T, T> func)
+		{
+			T[] result = new T[arr.Length];
+			for (int i = 0; i < arr.Length; i++)
+			{
+				result[i] = func(arr[i]);
+			}
+			return result;
+		}
+
+		public static void ChangeCollection<T>(this T[] arr, Func<T, T> howToChangeEachElement)
+		{
+			for (int i = 0; i < arr.Length; i++)
+			{
+				arr[i] = howToChangeEachElement(arr[i]);
+			}
+		}
 	}
 }
