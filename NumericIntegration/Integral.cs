@@ -7,6 +7,6 @@ namespace CompMathLibrary.NumericIntegration
 {
 	public abstract class Integral
 	{
-		public abstract MultidimensionalPoint<double> IntegralFromFunction(Function function, MultidimensionalPoint<double> functionArg);
+		public abstract MultidimensionalPoint<double> IntegralFromFunction(Function function, IntegrationLimit[] integrationLimits);
 	}
 }
