@@ -38,7 +38,7 @@ namespace CompMathLibrary.EigenvalueProblems
 			double s = FindSumOfNonDiagonalElements();
 			double[][] currentOrthogonalMatrix;
 			double alpha, beta, mu;
-			while (s > _precision)
+			while (s >= _precision)
 			{
 				mu = FindMu(k, l);
 				alpha = FindAlphaCoefficient(mu, k, l);
@@ -47,7 +47,7 @@ namespace CompMathLibrary.EigenvalueProblems
 				dMatrix = MultMatrixByMatrix(dMatrix, currentOrthogonalMatrix);
 				_matrix = RotateMatrix(_matrix, currentOrthogonalMatrix);
 				ChangeSumVector(k, l);
-				s = FindSumOfNonDiagonalElements();				
+				s = FindSumOfNonDiagonalElements(_matrix);				
 				k = _sumVector.IndexOf(_sumVector.Max(), (first, second) =>
 				{
 					if (first > second) return 1;
@@ -126,11 +126,27 @@ namespace CompMathLibrary.EigenvalueProblems
 		}
 		
 		private double FindSumOfNonDiagonalElements() => _sumVector.Sum();
-		
+		private double FindSumOfNonDiagonalElements(double[][] matr)
+		{
+			double res = 0;
+			for (int i = 0; i < matr.GetLength(0); i++)
+			{
+				for (int j = 0; j < matr[i].Length; j++)
+				{
+					if (i != j)
+					{
+						res += matr[i][j] * matr[i][j];
+					}
+				}
+			}
+			return res;
+		}
+
+
 		private double[][] RotateMatrix(double[][] matrixToRotate, double[][] specialUMatrix)
 		{
-			double[][] result = FindTransposenMatrix(specialUMatrix);
-			result = MultMatrixByMatrix(result, matrixToRotate);
+			double[][] result;
+			result = MultMatrixByMatrix(FindTransposenMatrix(specialUMatrix), matrixToRotate);
 			result = MultMatrixByMatrix(result, specialUMatrix);
 			return result;
 		}
